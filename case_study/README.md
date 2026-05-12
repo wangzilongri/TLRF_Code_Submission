@@ -19,7 +19,7 @@ case_study/
 
 ## Data Files (`data/`)
 
-The `data/` folder contains pre-computed Parquet files derived from the TLGRF backtest run on the HPC cluster.
+The `data/` folder contains pre-computed Parquet files from the TLGRF backtest.
 
 **Top-level files:**
 

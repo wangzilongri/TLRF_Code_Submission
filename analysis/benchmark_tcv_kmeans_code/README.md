@@ -16,7 +16,7 @@ This folder implements and evaluates a k-means time-series cross-validation benc
 | Step | File | Description |
 |---|---|---|
 | 1 | `STEP1_prepare_data_for_kmeans.ipynb` | Loads county-level panel data from `../data/augmented_us_counties.parquet` and reference tables (`ZipHsaHrr15.csv`, `ZIP_to_FIPS.csv`, `hhs_regions.csv`); produces `hhs_kmeans_data.csv` |
-| 2 | `STEP2_kmeans_hhs_script.py` | Runs k-means clustering over a range of cluster counts (100–3200) using Dask-ML; writes cluster assignment CSVs (HPC step) |
+| 2 | `STEP2_kmeans_hhs_script.py` | Runs k-means clustering over a range of cluster counts (100–3200) using Dask-ML; writes cluster assignment CSVs |
 | 3 | `STEP3_Merge_Clusters_w_Panel_Data.ipynb` | Merges cluster assignments back onto the panel data for validation |
 | 4 | `STEP4_generate_validation_diff.ipynb` | Loads merged data from `../data/augmented_us_counties.parquet`; computes validation differences and produces the Best_Kmeans_Table and figures |
 
@@ -30,10 +30,10 @@ This folder implements and evaluates a k-means time-series cross-validation benc
 
 ## Running
 
-STEP1 and STEP4 can be run locally. STEP2 (k-means over thousands of clusters) was originally run on HPC using Dask-ML:
+STEP1, STEP3, and STEP4 can be run interactively. STEP2 (k-means over thousands of clusters) is a standalone script:
 
 ```bash
 cd analysis/benchmark_tcv_kmeans_code
-jupyter notebook  # open and run STEP1, STEP3, STEP4
-# STEP2 is an HPC script; run with: python STEP2_kmeans_hhs_script.py
+jupyter notebook              # open and run STEP1, STEP3, STEP4
+python STEP2_kmeans_hhs_script.py  # run STEP2 separately
 ```
