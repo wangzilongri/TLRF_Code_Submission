@@ -17,7 +17,7 @@ This folder aggregates GRF variable importance scores across the full TLRF backt
 
 | File | Description |
 |---|---|
-| `STEP1_Extract_TLGRF_Feature_Importance.r` | R script (HPC) that extracts per-feature GRF importance scores from trained forests and writes `feature_importance.csv`, `TLGRF_depth_by_date.csv`, `TLGRF_leaf_and_tree_size_by_date.csv` |
+| `STEP1_Extract_TLGRF_Feature_Importance.r` | R script that extracts per-feature GRF importance scores from trained forests and writes `feature_importance.csv`, `TLGRF_depth_by_date.csv`, `TLGRF_leaf_and_tree_size_by_date.csv` |
 | `STEP2_Examine_TLGRF_Feature_Importance.ipynb` | Loads `feature_importance.csv` and `Sorted_Feature_Importance.csv`; produces ranked importance plots and TOPV20 table |
 | `STEP3_Examine_TLGRF_Depths.ipynb` | Loads `TLGRF_depth_by_date.csv`; produces tree depth diagnostic plots |
 | `STEP4_Examine_TLGRF_Leaf_Sizes.ipynb` | Loads `TLGRF_leaf_and_tree_size_by_date.csv`; produces leaf and tree size diagnostic plots |
@@ -36,4 +36,4 @@ jupyter notebook
 # Open and run STEP2, STEP3, STEP4 in order
 ```
 
-STEP1 requires the trained GRF forest objects on HPC and is not needed for local replication.
+STEP1 requires the trained GRF forest objects and is not needed to reproduce the paper figures — all pre-computed CSVs are included.

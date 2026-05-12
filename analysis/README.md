@@ -28,7 +28,7 @@ analysis/
 
 ## Data Files (`data/`)
 
-The `data/` folder contains pre-computed Parquet files used as inputs across multiple benchmark notebooks. These were generated on an HPC cluster and are provided to allow local replication without re-running GRF training.
+The `data/` folder contains pre-computed Parquet files used as inputs across multiple benchmark notebooks.
 
 | File pattern | Contents |
 |---|---|
@@ -38,10 +38,6 @@ The `data/` folder contains pre-computed Parquet files used as inputs across mul
 | `benchmark_fixed_window_*.parquet` | Fixed-window baseline predictions at various window lengths |
 | `benchmark_delta_*.parquet` | Delta (alternative weighting) model predictions |
 | `feature_importance_*.parquet` | Per-feature GRF importance scores aggregated over the backtest |
-
-### Regenerating from raw CSVs
-
-If you have access to the raw per-county, per-window CSV files from the HPC cluster, each benchmark sub-folder contains a `data_prep/` notebook or script that reads those CSVs and writes the corresponding Parquet files to `analysis/data/`. Run the data-prep step first, then the analysis notebooks. See individual sub-folder READMEs for details.
 
 ---
 
@@ -82,7 +78,7 @@ Tests sensitivity of TLGRF performance to key hyperparameters (number of trees, 
 **Paper output:** Table `SEIR_metrics` (SEIR-TLRF vs. SEIR-tcv MAE/RMSE), Figures `SEIR_MAE` and `SEIR_RMSE` (Appendix G)
 **Pre-computed results included:** `combined_metrics.csv`, `SEIR_Benchmarks_MAE.png`, `SEIR_Benchmarks_RMSE.png`
 
-Integrates TLRF growth rate estimates into a SEIR compartmental model and compares forecast accuracy (SEIR-TLRF vs. SEIR-tcv) on Colorado counties. The `Analyse_SEIR_Results_w_Colorado_Case_Study.ipynb` notebook reproduces the paper table and figures from the included `combined_metrics.csv`. The underlying SEIR simulation that generated `combined_metrics.csv` runs on HPC via the `spawn_*.sh` scripts; the per-county output files are not included due to size. The `corona_model/` package is a third-party SEIR implementation — see `coronaSEIR/LICENSE`.
+Integrates TLRF growth rate estimates into a SEIR compartmental model and compares forecast accuracy (SEIR-TLRF vs. SEIR-tcv) on Colorado counties. The `Analyse_SEIR_Results_w_Colorado_Case_Study.ipynb` notebook reproduces the paper table and figures from the included `combined_metrics.csv`. The `corona_model/` package is a third-party SEIR implementation — see `coronaSEIR/LICENSE`.
 
 ---
 
