@@ -78,7 +78,7 @@ Tests sensitivity of TLGRF performance to key hyperparameters (number of trees, 
 **Paper output:** Table `SEIR_metrics` (SEIR-TLRF vs. SEIR-tcv MAE/RMSE), Figures `SEIR_MAE` and `SEIR_RMSE` (Appendix G)
 **Pre-computed results included:** `combined_metrics.csv`, `SEIR_Benchmarks_MAE.png`, `SEIR_Benchmarks_RMSE.png`
 
-Integrates TLRF growth rate estimates into a SEIR compartmental model and compares forecast accuracy (SEIR-TLRF vs. SEIR-tcv) on Colorado counties. The `Analyse_SEIR_Results_w_Colorado_Case_Study.ipynb` notebook reproduces the paper table and figures from the included `combined_metrics.csv`. The `corona_model/` package is a third-party SEIR implementation — see `coronaSEIR/LICENSE`.
+Integrates TLRF growth rate estimates into a SEIR compartmental model and compares forecast accuracy (SEIR-TLRF vs. SEIR-tcv) on Colorado counties. The `Analyse_SEIR_Results_w_Colorado_Case_Study.ipynb` notebook reproduces the paper table and figures from the included `combined_metrics.csv`. The `corona_model/` package is a third-party SEIR implementation included for reproducibility.
 
 ---
 
