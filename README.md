@@ -194,7 +194,6 @@ Most notebooks read from pre-computed Parquet files and can be run on a standard
 
 ### For TLRF model training (HPC — outputs pre-computed)
 The GRF training and backtest that produced the Parquet files in `analysis/data/` and `case_study/data/` were run on the Georgia Tech ISyE HPC cluster:
-- **Node:** `isye-syang605.isye.gatech.edu`
 - **CPU:** 127 × AMD EPYC-Rome cores
 - **Memory:** 960 GiB RAM
 - **OS:** Linux RHEL 8.6 (kernel 4.18.0-372.26.1.el8\_6.x86\_64)
