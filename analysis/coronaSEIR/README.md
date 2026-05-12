@@ -31,6 +31,6 @@ The analysis notebook requires `combined_metrics.csv` (included) and the CDPHE c
 | `simulated_colorado_SEIR.csv` | Example SEIR trajectory for a Colorado county |
 | `corona_model/` | Third-party SEIR model package (see LICENSE) |
 
-## Third-Party License
+## Third-Party Package
 
-The `corona_model/` package is a third-party SEIR implementation. See `LICENSE` for its terms.
+The `corona_model/` package is a third-party SEIR implementation included for reproducibility.
