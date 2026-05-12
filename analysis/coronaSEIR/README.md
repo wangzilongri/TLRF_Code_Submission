@@ -16,18 +16,16 @@ The pre-computed outputs above are included in this folder. The main analysis no
 
 ## Running the Analysis
 
-The analysis notebook requires `combined_metrics.csv` (included) and the CDPHE case study data from `../../../case_study/data/`.
-
-The heavy SEIR simulation step (spawn scripts) that originally generated `combined_metrics.csv` requires HPC resources and the per-county simulation outputs in `./sim_results/`. These are not included in the submission due to size (7,000+ files). The pre-computed `combined_metrics.csv` is provided so the table and figures in the paper can be reproduced without re-running the simulation.
+The analysis notebook requires `combined_metrics.csv` (included) and the CDPHE case study data from `../../../case_study/data/`. The pre-computed `combined_metrics.csv` is provided so the table and figures in the paper can be reproduced without re-running the SEIR simulation.
 
 ## Key Files
 
 | File | Description |
 |---|---|
 | `Analyse_SEIR_Results_w_Colorado_Case_Study.ipynb` | Main analysis notebook — produces paper table and figures |
-| `SEIR_Changepoints_TLGRF.py` | SEIR simulation script using TLRF growth rates (HPC) |
-| `SEIR_Changepoints_tcv.py` | SEIR simulation script using tcv growth rates (HPC) |
-| `spawn_TLGRF.sh` / `spawn_tcv.sh` | HPC job submission scripts for SEIR simulations |
+| `SEIR_Changepoints_TLGRF.py` | SEIR simulation script using TLRF growth rates |
+| `SEIR_Changepoints_tcv.py` | SEIR simulation script using tcv growth rates |
+| `spawn_TLGRF.sh` / `spawn_tcv.sh` | Job submission scripts for SEIR simulations |
 | `combined_metrics.csv` | Pre-computed daily MAE/RMSE metrics (SEIR-TLRF vs. SEIR-tcv) |
 | `filtered_colorado_df.csv` | Colorado county FIPS list used in the analysis |
 | `simulated_colorado_SEIR.csv` | Example SEIR trajectory for a Colorado county |

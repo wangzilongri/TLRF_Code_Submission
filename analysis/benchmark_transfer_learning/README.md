@@ -17,12 +17,12 @@ Pre-computed `stage2_benchmark_results/` is included so STEP6 can be run without
 
 | Step | File | Description |
 |---|---|---|
-| 1 | `STEP1_Stitch_Blocks.ipynb` | Reads imputed block CSV files from `../data/imputed_block_windowsize=2/` (HPC); stitches even/odd time blocks into `imputed_even_blocks.parquet` and `imputed_odd_blocks.parquet` |
-| 2a | `STEP2_Generate_Gram_Matrices.py` | Computes per-cutoff gram matrices X′X and writes them to `./gram_matrices/` (HPC) |
-| 2b | `STEP2_Generate_Stage1_Beta.py` | Fits LASSO Stage 1 betas and writes them to `./betas/` (HPC) |
-| 3 | `STEP3_Generate_Stage1_Beta.py` | Refines Stage 1 beta estimates (HPC) |
+| 1 | `STEP1_Stitch_Blocks.ipynb` | Reads imputed block CSV files from `../data/imputed_block_windowsize=2/`; stitches even/odd time blocks into `imputed_even_blocks.parquet` and `imputed_odd_blocks.parquet` |
+| 2a | `STEP2_Generate_Gram_Matrices.py` | Computes per-cutoff gram matrices X′X and writes them to `./gram_matrices/` |
+| 2b | `STEP2_Generate_Stage1_Beta.py` | Fits LASSO Stage 1 betas and writes them to `./betas/` |
+| 3 | `STEP3_Generate_Stage1_Beta.py` | Refines Stage 1 beta estimates |
 | 4 | `STEP4_Generate_Leave_one_Out_beta.ipynb` | Applies leave-one-out Woodbury updates to compute LOO betas; reads from `./betas/` and `./gram_matrices/` |
-| 5 | `STEP5_Stage2_Estimator.py` | Runs the Stage 2 transfer-learning estimator; writes per-county NPY prediction files to `./stage2_betas_organized/` (HPC) |
+| 5 | `STEP5_Stage2_Estimator.py` | Runs the Stage 2 transfer-learning estimator; writes per-county NPY prediction files to `./stage2_betas_organized/` |
 | 6 | `STEP6_Evaluate_Stage2_Predictions.py` | Aggregates Stage 2 NPY files into `./stage2_benchmark_results/*.parquet`; computes MAE/RMSE vs. TLRF and saves figures |
 
 ## Pre-computed Outputs (included)
@@ -35,11 +35,9 @@ Pre-computed `stage2_benchmark_results/` is included so STEP6 can be run without
 
 ## Running
 
-To reproduce the paper figures from pre-computed outputs (no HPC required):
+To reproduce the paper figures from pre-computed outputs:
 
 ```bash
 cd analysis/benchmark_transfer_learning
 python STEP6_Evaluate_Stage2_Predictions.py
 ```
-
-Full pipeline re-run (STEP1–STEP5) requires the HPC block CSV files in `../data/imputed_block_windowsize=2/` (not included due to size) and HPC resources for STEP2–STEP5.

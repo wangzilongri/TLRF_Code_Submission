@@ -15,7 +15,7 @@ Compares TLRF mean absolute error against a suite of fixed-window exponential gr
 
 | File | Description |
 |---|---|
-| `STEP1_Generate_TLGRF_vs_Fixed_Windows_script.py` | Generates fixed-window predictions from raw backtest data (HPC step); writes `../data/benchmark_fixed_window.parquet` |
+| `STEP1_Generate_TLGRF_vs_Fixed_Windows_script.py` | Generates fixed-window predictions from raw backtest data; writes `../data/benchmark_fixed_window.parquet` |
 | `STEP2_Analyse_TLGRF_vs_Fixed_Windows.ipynb` | Loads `../data/benchmark_fixed_window.parquet` and `../data/benchmark_tlgrf.parquet`; produces Figure 2 and the fixed windows table |
 
 ## Running

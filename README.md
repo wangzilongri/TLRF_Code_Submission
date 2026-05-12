@@ -9,7 +9,7 @@ Code repository for the paper:
 
 ## Overview
 
-This repository contains the code and pre-computed model outputs needed to replicate the figures, tables, and benchmarks in the paper. The TLRF model estimates time-varying, county-level COVID-19 exponential growth rates by combining a telescoping window design with the Random Forest framework. The repository is organized into two top-level components: a **case study** comparing TLRF outbreak alerts to Colorado CDPHE investigations, and an **analysis** folder containing all benchmark comparisons (fixed-window baselines, GRF variants, Local Linear Forest, delta-weighting, and k-means TCV). TLRF model outputs are provided as pre-computed Parquet files so that most notebooks can be run without access to the original HPC cluster.
+This repository contains the code and pre-computed model outputs needed to replicate the figures, tables, and benchmarks in the paper. The TLRF model estimates time-varying, county-level COVID-19 exponential growth rates by combining a telescoping window design with the Random Forest framework. The repository is organized into two top-level components: a **case study** comparing TLRF outbreak alerts to Colorado CDPHE investigations, and an **analysis** folder containing all benchmark comparisons (fixed-window baselines, GRF variants, Local Linear Forest, delta-weighting, and k-means TCV). TLRF model outputs are provided as pre-computed Parquet files so that all notebooks can be run locally without re-running GRF training.
 
 ---
 
@@ -89,13 +89,13 @@ Navigate to `case_study/src/` or any `analysis/` sub-folder and open the relevan
 ## Data
 
 ### Pre-computed TLRF outputs (Parquet)
-TLRF model outputs — county-level estimated growth rates, prediction intervals, and backtest metrics — are provided as Parquet files inside `case_study/data/` and `analysis/data/`. These files were generated on an HPC cluster and are included so that reviewers and replicators do not need to re-run the GRF training step.
+TLRF model outputs — county-level estimated growth rates, prediction intervals, and backtest metrics — are provided as Parquet files inside `case_study/data/` and `analysis/data/`.
 
 ### Case study (`case_study/`)
 The case study is **fully self-contained** — all four notebooks run from the pre-computed Parquet files in `case_study/data/`.
 
 ### Analysis benchmarks (`analysis/`)
-The benchmark notebooks in `analysis/` require the pre-computed benchmark Parquet files in `analysis/data/`. These files are included in the repository. If you need to regenerate them from raw per-county CSVs (e.g., after updating the training window), see the data pipeline notes in `analysis/README.md`.
+The benchmark notebooks in `analysis/` require the pre-computed benchmark Parquet files in `analysis/data/`. These files are included in the repository.
 
 ---
 
@@ -180,7 +180,6 @@ analysis/benchmark_transfer_learning/ →  LASSO Transfer Learner benchmark (App
 
 ### Notes
 - Most analysis notebooks were originally developed on Databricks (PySpark); the versions in this repository have been ported to run on a local Python environment.
-- The TLRF model training itself (not included here — outputs provided as Parquet) was run on an HPC cluster using R with the `grf` package.
 
 ---
 
@@ -192,12 +191,7 @@ Most notebooks read from pre-computed Parquet files and can be run on a standard
 - **Memory:** 16 GB RAM recommended (largest Parquet files are ~330 MB; peak in-memory usage is under 8 GB)
 - **Storage:** ~2 GB for the full repository including all Parquet files
 
-### For TLRF model training (HPC — outputs pre-computed)
-The GRF training and backtest that produced the Parquet files in `analysis/data/` and `case_study/data/` were run on the Georgia Tech ISyE HPC cluster:
-- **CPU:** 127 × AMD EPYC-Rome cores
-- **Memory:** 960 GiB RAM
-- **OS:** Linux RHEL 8.6 (kernel 4.18.0-372.26.1.el8\_6.x86\_64)
-
+### For TLRF model training (outputs pre-computed)
 Re-running the GRF training is **not required** to replicate the paper's figures and tables — all outputs are provided as Parquet files.
 
 ---
