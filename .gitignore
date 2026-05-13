@@ -6,17 +6,5 @@ __pycache__/
 tlrf-env/
 *.egg-info/
 
-# Large parquet files (>50 MB) — use chunked-parquets branch for GitHub-compatible splits
-analysis/data/benchmark_fixed_window.parquet
-analysis/data/benchmark_llf_tlgrf.parquet
-analysis/data/benchmark_tlgrf_top10.parquet
-analysis/data/benchmark_tlgrf_imputed.parquet
-analysis/data/benchmark_tlgrf.parquet
-analysis/data/benchmark_regression_forest_blocked.parquet
-analysis/data/benchmark_llf_classical.parquet
-analysis/data/benchmark_llrf_blocked_top10.parquet
-analysis/data/benchmark_llrf_blocked.parquet
-analysis/data/benchmark_grf_shifted_W_time_variant.parquet
-analysis/data/benchmark_grf_time_variant.parquet
-analysis/data/benchmark_grf_shifted_W_time_invariant.parquet
-analysis/data/benchmark_grf_time_invariant.parquet
+# Large parquets are split into part directories on this branch (chunked-parquets)
+# The original monolithic .parquet files do not exist here.

@@ -1,5 +1,8 @@
 # Benchmark: Delta Weighting
 
+> [!TIP]
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+
 ## Overview
 
 Evaluates alternative weighting schemes for the GRF forest — delta-based weights versus the telescoping window weights used in TLRF. Tests whether the specific weight construction in TLRF is necessary for performance.

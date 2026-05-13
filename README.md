@@ -1,5 +1,13 @@
 # TLRF: Transfer Learning Random Forest
 
+> [!TIP]
+> **Reproduce all paper figures and tables in one command:**
+> ```bash
+> git clone <this-repo> && cd TLRF_Code_Submission
+> ./run_all.sh
+> ```
+> `run_all.sh` creates a Python virtual environment, installs every dependency, and runs all notebooks and scripts that produce paper outputs. No cluster access or additional data required.
+
 Code repository for the paper:
 
 > **Small Area Estimation of Case Growths for Timely COVID-19 Outbreak Detection**
@@ -47,10 +55,18 @@ TLRF_Code_Submission/
 
 ## Installation
 
-### Python environment
+### Quick start (recommended)
 
 ```bash
-# Create and activate a virtual environment (recommended)
+./run_all.sh
+```
+
+This single command creates `.venv/`, installs all Python dependencies, and executes every notebook and script that produces a paper output. Logs for each step are written to `.run_logs/`. Requires **Python 3.9+** on `PATH`.
+
+### Manual setup
+
+```bash
+# Create and activate a virtual environment
 python3 -m venv tlrf-env
 source tlrf-env/bin/activate        # macOS / Linux
 # tlrf-env\Scripts\activate         # Windows
@@ -198,9 +214,25 @@ Re-running the GRF training is **not required** to replicate the paper's figures
 
 ## Paper Reference
 
-```
-She, Z., Wang, Z., Ayer, T., Chhatwal, J. (2025). Small Area Estimation of Case
-Growths for Timely COVID-19 Outbreak Detection. Operations Research (submitted).
+She, Z., Wang, Z., Chhatwal, J., Ayer, T. (2025). Small Area Estimation of Case Growths for Timely COVID-19 Outbreak Detection. *Operations Research* (submitted).
+
+**Preprint:** <https://arxiv.org/abs/2312.04110>
+
+**Code:** <https://github.com/wangzilongri/TLRF_Code_Submission>
+
+### BibTeX
+
+```bibtex
+@misc{she2023small,
+  title         = {Small Area Estimation of Case Growths for Timely {COVID}-19 Outbreak Detection},
+  author        = {She, Zhaowei and Wang, Zilong and Chhatwal, Jagpreet and Ayer, Turgay},
+  year          = {2023},
+  eprint        = {2312.04110},
+  archivePrefix = {arXiv},
+  primaryClass  = {stat.ML},
+  doi           = {10.48550/arXiv.2312.04110},
+  url           = {https://arxiv.org/abs/2312.04110}
+}
 ```
 
 ---

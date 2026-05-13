@@ -1,5 +1,8 @@
 # Benchmark: Fixed-Window Baselines
 
+> [!TIP]
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+
 ## Overview
 
 Compares TLRF mean absolute error against a suite of fixed-window exponential growth rate estimators (7-, 14-, 21-, and 28-day windows). Demonstrates that the adaptive telescoping window outperforms any single fixed choice across the county population distribution.
