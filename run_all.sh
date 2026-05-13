@@ -1,13 +1,22 @@
 #!/usr/bin/env bash
 #
-# run_all.sh — reproduce every paper figure, table, and benchmark from
-#              the pre-computed inputs included in this repository.
+# run_all.sh — reproduce paper figures and tables from pre-computed inputs.
 #
 # Usage:
-#   ./run_all.sh
+#   ./run_all.sh            # default: figure-generating steps only (~15–30 min)
+#   ./run_all.sh --all      # full pipeline, including upstream preprocessing
 #
-# Requirements: Python 3.9+ available as `python3`. Everything else
-# (packages, Jupyter) is installed automatically into .venv/.
+# Default mode runs only the final analysis/visualisation notebook or script
+# in each benchmark — the step that reads pre-computed Parquet/CSV inputs and
+# writes the paper figures and metric tables.  All required intermediate data
+# is already included in the repository.
+#
+# --all additionally runs earlier pipeline steps (data preparation, model
+# fitting) that were originally executed on an HPC cluster.  Some of those
+# steps require R + the grf package or large intermediate datasets not
+# included in the repo; they may fail in a plain local environment.
+#
+# Requirements: Python 3.9+ on PATH. Everything else is installed into .venv/.
 
 set -uo pipefail
 
@@ -16,15 +25,23 @@ VENV="$REPO/.venv"
 LOG_DIR="$REPO/.run_logs"
 mkdir -p "$LOG_DIR"
 
-# ── colours (disabled when not writing to a terminal) ────────────────────────
+# ── parse flags ───────────────────────────────────────────────────────────────
+FULL_PIPELINE=false
+for arg in "$@"; do
+  case $arg in
+    --all) FULL_PIPELINE=true ;;
+    *) echo "Unknown flag: $arg  (valid: --all)"; exit 1 ;;
+  esac
+done
+
+# ── colours (disabled when stdout is not a terminal) ─────────────────────────
 if [[ -t 1 ]]; then
-    GRN='\033[0;32m' RED='\033[0;31m' BLD='\033[1m' RST='\033[0m'
+    GRN='\033[0;32m' RED='\033[0;31m' DIM='\033[2m' BLD='\033[1m' RST='\033[0m'
 else
-    GRN='' RED='' BLD='' RST=''
+    GRN='' RED='' DIM='' BLD='' RST=''
 fi
-hdr() { echo -e "\n${BLD}── $* ──${RST}"; }
-ok()  { echo -e "${GRN}✓${RST}"; }
-fail(){ echo -e "${RED}✗${RST}  (log: $1)"; }
+hdr()  { echo -e "\n${BLD}── $* ──${RST}"; }
+skip() { echo -e "  ${DIM}skip  $*${RST}"; }
 
 # ── 1. virtual environment ────────────────────────────────────────────────────
 hdr "Environment"
@@ -47,35 +64,37 @@ PASS=0; FAIL=0; FAILS=()
 run_nb() {                     # run_nb "label" "rel/dir" "notebook.ipynb"
     local label="$1" dir="$2" nb="$3"
     local log="$LOG_DIR/${label// /_}.log"
-    printf "  %-52s" "$label"
+    printf "  %-54s" "$label"
     if ( cd "$REPO/$dir" && \
          "$JUPYTER" nbconvert --to notebook --execute --inplace \
              --ExecutePreprocessor.kernel_name=python3 \
              --ExecutePreprocessor.timeout=1800 "$nb" \
        ) > "$log" 2>&1; then
-        ok; PASS=$((PASS + 1))
+        echo -e "${GRN}✓${RST}"; PASS=$((PASS + 1))
     else
-        fail "$log"; FAILS+=("$label"); FAIL=$((FAIL + 1))
+        echo -e "${RED}✗${RST}  (log: $log)"; FAILS+=("$label"); FAIL=$((FAIL + 1))
     fi
 }
 
 run_py() {                     # run_py "label" "rel/dir" "script.py"
     local label="$1" dir="$2" script="$3"
     local log="$LOG_DIR/${label// /_}.log"
-    printf "  %-52s" "$label"
+    printf "  %-54s" "$label"
     if ( cd "$REPO/$dir" && "$PYTHON" "$script" ) > "$log" 2>&1; then
-        ok; PASS=$((PASS + 1))
+        echo -e "${GRN}✓${RST}"; PASS=$((PASS + 1))
     else
-        fail "$log"; FAILS+=("$label"); FAIL=$((FAIL + 1))
+        echo -e "${RED}✗${RST}  (log: $log)"; FAILS+=("$label"); FAIL=$((FAIL + 1))
     fi
 }
 
 # ── 3. case study ─────────────────────────────────────────────────────────────
 hdr "Case study"
-run_nb "STEP1 investigation overlap"   case_study/src  STEP1_check_investigation_overlap.ipynb
-run_nb "STEP2 outbreak matrix"         case_study/src  STEP2_Generate_Outbreak_Matrix_and_DPs.ipynb
-run_nb "STEP3 CDPHE vs TLGRF"          case_study/src  STEP3_CDPHE_vs_TLGRF.ipynb
-run_nb "STEP4 threshold policy"        case_study/src  STEP4_try_threshold_policy.ipynb
+if [[ $FULL_PIPELINE == true ]]; then
+    run_nb "STEP1 investigation overlap"   case_study/src  STEP1_check_investigation_overlap.ipynb
+fi
+run_nb "STEP2 outbreak matrix (Figure 3)" case_study/src  STEP2_Generate_Outbreak_Matrix_and_DPs.ipynb
+run_nb "STEP3 CDPHE vs TLGRF"             case_study/src  STEP3_CDPHE_vs_TLGRF.ipynb
+run_nb "STEP4 threshold policy"           case_study/src  STEP4_try_threshold_policy.ipynb
 
 # ── 4. benchmarks ─────────────────────────────────────────────────────────────
 hdr "Benchmarks"
@@ -104,9 +123,39 @@ run_nb "OLS weighted telescopic form"  analysis/OLS_Weighted_Telescopic_Form  OL
 hdr "Appendix A1 robustness check"
 run_py "A1 STEP 3 analyse results"     analysis/A1_Robustness_Check  STEP3_R2C1_Analyse_Results.py
 
-# ── 9. summary ────────────────────────────────────────────────────────────────
+# ── 9. upstream pipeline steps (--all only) ───────────────────────────────────
+if [[ $FULL_PIPELINE == true ]]; then
+    echo ""
+    hdr "Upstream pipeline steps (--all)"
+    echo -e "  ${DIM}Note: some steps below require HPC intermediate data or R + grf;${RST}"
+    echo -e "  ${DIM}they may fail in a plain local environment.${RST}"
+
+    # k-means TCV: data preparation
+    run_nb "TCV STEP1 prepare data"        analysis/benchmark_tcv_kmeans_code  STEP1_prepare_data_for_kmeans.ipynb
+    run_py "TCV STEP2 k-means script"      analysis/benchmark_tcv_kmeans_code  STEP2_kmeans_hhs_script.py
+    run_nb "TCV STEP3 merge clusters"      analysis/benchmark_tcv_kmeans_code  STEP3_Merge_Clusters_w_Panel_Data.ipynb
+
+    # LASSO-TL: intermediate stages
+    run_nb "LASSO-TL STEP1 stitch blocks"  analysis/benchmark_transfer_learning  STEP1_Stitch_Blocks.ipynb
+    run_py "LASSO-TL STEP2 gram matrices"  analysis/benchmark_transfer_learning  STEP2_Generate_Gram_Matrices.py
+    run_py "LASSO-TL STEP2 stage1 betas"   analysis/benchmark_transfer_learning  STEP2_Generate_Stage1_Beta.py
+    run_py "LASSO-TL STEP3 stage1 betas"   analysis/benchmark_transfer_learning  STEP3_Generate_Stage1_Beta.py
+    run_nb "LASSO-TL STEP4 LOO betas"      analysis/benchmark_transfer_learning  STEP4_Generate_Leave_one_Out_beta.ipynb
+    run_py "LASSO-TL STEP5 stage2"         analysis/benchmark_transfer_learning  STEP5_Stage2_Estimator.py
+
+    # A1: DGP and GRF training (STEP2 requires R + grf)
+    run_py "A1 STEP1 DGP"                  analysis/A1_Robustness_Check  STEP1_R2C1_DGP.py
+    run_py "A1 STEP2 train GRF (needs R)"  analysis/A1_Robustness_Check  STEP2_R2C1_Train_GRF.py
+fi
+
+# ── 10. summary ───────────────────────────────────────────────────────────────
 echo ""
 hdr "Summary"
+if [[ $FULL_PIPELINE == true ]]; then
+    echo -e "  Mode   : ${BLD}--all${RST} (full pipeline)"
+else
+    echo -e "  Mode   : ${BLD}default${RST} (figure-generating steps only)"
+fi
 echo -e "  Passed : ${GRN}${PASS}${RST}"
 echo -e "  Failed : ${RED}${FAIL}${RST}"
 if [[ $FAIL -gt 0 ]]; then
@@ -116,5 +165,5 @@ if [[ $FAIL -gt 0 ]]; then
     echo "  Logs are in $LOG_DIR/"
     exit 1
 fi
-echo -e "  ${GRN}All paper outputs reproduced.${RST}"
+echo -e "  ${GRN}All steps passed.${RST}"
 echo "  Logs are in $LOG_DIR/"

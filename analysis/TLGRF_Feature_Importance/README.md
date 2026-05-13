@@ -1,7 +1,7 @@
 # TLGRF Feature Importance
 
 > [!TIP]
-> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce paper figures (default), or `./run_all.sh --all` for the full pipeline.
 
 ## Overview
 
@@ -31,12 +31,15 @@ This folder aggregates GRF variable importance scores across the full TLRF backt
 
 ## Running
 
-All pre-computed CSVs are included. Run STEP2–STEP4 directly:
+All pre-computed CSVs are included. STEP2–STEP4 each produce a distinct paper figure and can be run independently:
 
 ```bash
+# Easiest — from repo root (runs STEP2, STEP3, STEP4):
+./run_all.sh
+
+# Or manually:
 cd analysis/TLGRF_Feature_Importance
-jupyter notebook
-# Open and run STEP2, STEP3, STEP4 in order
+jupyter notebook   # open STEP2, STEP3, STEP4 in order
 ```
 
-STEP1 requires the trained GRF forest objects and is not needed to reproduce the paper figures — all pre-computed CSVs are included.
+STEP1 requires the trained GRF forest objects from the HPC run and is not needed to reproduce the paper figures — all pre-computed CSVs are included.

@@ -90,9 +90,15 @@ Sweeps the alert threshold parameter and evaluates precision/recall tradeoffs.
 ## Running the Self-Contained Steps
 
 ```bash
-pip install -r requirements.txt
+# Easiest — from repo root (runs STEP2, STEP3, STEP4 by default):
+./run_all.sh
+
+# Include STEP1 (exploratory overlap analysis):
+./run_all.sh --all
+
+# Or manually:
 cd case_study/src
-jupyter notebook   # run STEP1–STEP4 in order
+jupyter notebook   # open and run STEP1–STEP4
 ```
 
 ---

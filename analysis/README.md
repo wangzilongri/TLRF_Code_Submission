@@ -106,16 +106,23 @@ Derivation and numerical validation of the OLS weighted telescopic form used in 
 ## Running the Benchmarks
 
 ```bash
-# From the repo root
-pip install -r requirements.txt
+# From the repo root — runs all figure-generating steps (~15–30 min)
+./run_all.sh
 
-# Example: reproduce Figure 2 (fixed-window benchmark)
-cd analysis/benchmark_fixed_window
-jupyter notebook  # open and run the notebook(s) in this folder
-
-# Example: reproduce A1 robustness check (self-contained)
-cd analysis/A1_Robustness_Check
-jupyter notebook
+# Full pipeline including upstream preprocessing (some steps require HPC data or R)
+./run_all.sh --all
 ```
 
-Each sub-folder may contain its own brief README with notebook-specific instructions.
+To run a single benchmark manually:
+
+```bash
+# Example: reproduce Figure 2 (fixed-window benchmark)
+cd analysis/benchmark_fixed_window
+jupyter notebook  # open STEP2_Analyse_TLGRF_vs_Fixed_Windows.ipynb
+
+# Example: reproduce A1 robustness check tables
+cd analysis/A1_Robustness_Check
+python STEP3_R2C1_Analyse_Results.py
+```
+
+Each sub-folder contains its own README with step-by-step instructions and a table mapping notebooks to paper outputs.

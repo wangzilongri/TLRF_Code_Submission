@@ -1,7 +1,7 @@
 # Benchmark: k-means Time-Series Cross-Validation (TCV)
 
 > [!TIP]
-> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce paper figures (default), or `./run_all.sh --all` for the full pipeline.
 
 ## Overview
 
@@ -33,10 +33,16 @@ This folder implements and evaluates a k-means time-series cross-validation benc
 
 ## Running
 
-STEP1, STEP3, and STEP4 can be run interactively. STEP2 (k-means over thousands of clusters) is a standalone script:
+The default replication step is STEP4, which reads pre-computed cluster assignments and generates the benchmark figures:
 
 ```bash
+# Easiest — from repo root (runs STEP4 only by default):
+./run_all.sh
+
+# Full pipeline including data prep (./run_all.sh --all runs STEP1–STEP4):
+./run_all.sh --all
+
+# Or manually:
 cd analysis/benchmark_tcv_kmeans_code
-jupyter notebook              # open and run STEP1, STEP3, STEP4
-python STEP2_kmeans_hhs_script.py  # run STEP2 separately
+jupyter notebook STEP4_generate_validation_diff.ipynb
 ```

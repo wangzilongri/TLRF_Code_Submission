@@ -1,7 +1,7 @@
 # Benchmark: LASSO Transfer Learner (LASSOTL)
 
 > [!TIP]
-> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce paper figures (default), or `./run_all.sh --all` for the full pipeline.
 
 ## Overview
 
@@ -41,6 +41,12 @@ Pre-computed `stage2_benchmark_results/` is included so STEP6 can be run without
 To reproduce the paper figures from pre-computed outputs:
 
 ```bash
+# Easiest — from repo root:
+./run_all.sh
+
+# Or manually (default step only):
 cd analysis/benchmark_transfer_learning
 python STEP6_Evaluate_Stage2_Predictions.py
 ```
+
+To run the full pipeline from scratch (requires intermediate data from HPC), use `./run_all.sh --all`, which runs STEP1–STEP6 in order.

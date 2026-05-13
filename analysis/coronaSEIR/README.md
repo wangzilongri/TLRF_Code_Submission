@@ -1,7 +1,7 @@
 # coronaSEIR: TLRF Growth Rate Integration into SEIR Models
 
 > [!TIP]
-> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce paper figures (default), or `./run_all.sh --all` for the full pipeline.
 
 ## Overview
 
@@ -19,7 +19,16 @@ The pre-computed outputs above are included in this folder. The main analysis no
 
 ## Running the Analysis
 
-The analysis notebook requires `combined_metrics.csv` (included) and the CDPHE case study data from `../../../case_study/data/`. The pre-computed `combined_metrics.csv` is provided so the table and figures in the paper can be reproduced without re-running the SEIR simulation.
+```bash
+# Easiest — from repo root:
+./run_all.sh
+
+# Or manually:
+cd analysis/coronaSEIR
+jupyter notebook Analyse_SEIR_Results_w_Colorado_Case_Study.ipynb
+```
+
+The analysis notebook requires `combined_metrics.csv` (included) and the Colorado county data from `case_study/data/`. The pre-computed `combined_metrics.csv` is provided so the paper table and figures can be reproduced without re-running the SEIR simulation.
 
 ## Key Files
 

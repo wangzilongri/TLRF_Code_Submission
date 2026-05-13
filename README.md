@@ -3,8 +3,9 @@
 > [!TIP]
 > **Reproduce all paper figures and tables in one command:**
 > ```bash
-> git clone <this-repo> && cd TLRF_Code_Submission
-> ./run_all.sh
+> git clone https://github.com/wangzilongri/TLRF_Code_Submission && cd TLRF_Code_Submission
+> ./run_all.sh          # figure-generating steps only  (~15–30 min)
+> ./run_all.sh --all    # full pipeline including upstream preprocessing
 > ```
 > `run_all.sh` creates a Python virtual environment, installs every dependency, and runs all notebooks and scripts that produce paper outputs. No cluster access or additional data required.
 
@@ -30,15 +31,23 @@ TLRF_Code_Submission/
 ├── AUTHORS                          # Author list
 ├── requirements.txt                 # Python package requirements
 ├── r_packages.R                     # R package installation script
+├── run_all.sh                       # One-command replication script
 │
 ├── case_study/                      # Colorado CDPHE outbreak-alert comparison
 │   ├── README.md                    # Case study overview and step-by-step guide
-│   ├── data/                        # Input parquet files for case study notebooks
+│   ├── data/                        # Pre-computed Parquet inputs for case study
 │   └── src/                         # Jupyter notebooks (STEP1–STEP4)
 │
 └── analysis/                        # Benchmark comparisons and robustness checks
     ├── README.md                    # Analysis overview and figure/table map
-    ├── data/                        # Pre-computed benchmark parquet files
+    ├── data/                        # Pre-computed benchmark Parquet files
+    │   ├── augmented_us_counties.parquet
+    │   ├── imputed_augmented_us_counties.parquet
+    │   ├── benchmark_tlgrf/         # TLRF backtest predictions (chunked)
+    │   ├── benchmark_grf_*/         # GRF variant predictions (chunked)
+    │   ├── benchmark_llf_*/         # LLF predictions (chunked)
+    │   ├── benchmark_fixed_window/  # Fixed-window predictions (chunked)
+    │   └── ...                      # Other benchmark Parquets
     ├── A1_Robustness_Check/         # Appendix A1 parameter sensitivity (self-contained)
     ├── benchmark_GRF/               # GRF variant benchmarks
     ├── benchmark_LLF/               # Local Linear Forest / Stage-2 benchmarks
@@ -58,10 +67,15 @@ TLRF_Code_Submission/
 ### Quick start (recommended)
 
 ```bash
-./run_all.sh
+./run_all.sh            # default: figure-generating steps only (~15–30 min)
+./run_all.sh --all      # full pipeline including upstream preprocessing
 ```
 
-This single command creates `.venv/`, installs all Python dependencies, and executes every notebook and script that produces a paper output. Logs for each step are written to `.run_logs/`. Requires **Python 3.9+** on `PATH`.
+`run_all.sh` creates `.venv/`, installs all Python dependencies, sets `MPLBACKEND=Agg` for headless rendering, and runs each notebook in its correct working directory. Per-step logs are written to `.run_logs/`. Requires **Python 3.9+** on `PATH`.
+
+**Default mode** runs only the final analysis/visualisation step for each benchmark — the step that reads pre-computed Parquet/CSV inputs and writes paper figures and metric tables. All required intermediate data is already in the repository.
+
+**`--all` mode** additionally runs upstream preprocessing and model-fitting steps that were originally executed on an HPC cluster. Some of those steps require R + the `grf` package or large intermediate datasets not included in the repo; they may fail in a plain local environment.
 
 ### Manual setup
 
@@ -117,32 +131,38 @@ The benchmark notebooks in `analysis/` require the pre-computed benchmark Parque
 
 ## Replication
 
-### Step 1 — Case study (Colorado CDPHE comparison)
-Run notebooks in order inside `case_study/src/`. All run from pre-computed Parquet files — no additional data required.
+The fastest path is `./run_all.sh` from the repo root. To run a single sub-folder manually, `cd` into it and open the notebook(s) in Jupyter, or run the `.py` script directly with `python`.
 
-| Notebook | Description | Produces |
+### Case study (Colorado CDPHE comparison)
+
+All notebooks read from pre-computed Parquet files in `case_study/data/` — no additional data required.
+
+| Notebook | Produces | run_all.sh mode |
 |---|---|---|
-| `STEP1_check_investigation_overlap.ipynb` | CDPHE investigation timing and overlap | Exploratory summary |
-| `STEP2_Generate_Outbreak_Matrix_and_DPs.ipynb` | County × time outbreak indicator matrix | Paper **Figure 3** |
-| `STEP3_CDPHE_vs_TLGRF.ipynb` | CDPHE capacity vs. TLRF comparison | Main case study figures and tables |
-| `STEP4_try_threshold_policy.ipynb` | Threshold sensitivity sweep | Policy comparison figures |
+| `STEP1_check_investigation_overlap.ipynb` | Exploratory overlap summary | `--all` only |
+| `STEP2_Generate_Outbreak_Matrix_and_DPs.ipynb` | Paper **Figure 3** | default |
+| `STEP3_CDPHE_vs_TLGRF.ipynb` | Main case study figures and tables | default |
+| `STEP4_try_threshold_policy.ipynb` | Threshold policy figures | default |
 
-### Step 2 — Analysis benchmarks
-Each sub-folder inside `analysis/` is independent. Run the notebooks within each folder after ensuring `analysis/data/` is populated:
+### Analysis benchmarks
 
-```
-analysis/benchmark_fixed_window/   →  Figure 2, fixed-windows table
-analysis/benchmark_GRF/            →  GRF benchmark plots, updated_flexible_table
-analysis/benchmark_LLF/            →  LLF / Stage-2 benchmark plots
-analysis/benchmark_delta/          →  Delta weighting benchmark
-analysis/TLGRF_Feature_Importance/ →  Feature importance plots, TOPV20_Itemized table
-analysis/coronaSEIR/               →  SEIR-TLRF vs. SEIR-tcv figures and table (Appendix G)
-analysis/benchmark_tcv_kmeans_code/→  k-means TCV benchmark, Best_Kmeans_Table
-analysis/benchmark_transfer_learning/ →  LASSO Transfer Learner benchmark (Appendix E)
-```
+Each sub-folder is independent. All figure-generating steps read from pre-computed Parquets in `analysis/data/`.
 
-### Step 3 — Robustness check (Appendix A1)
-`analysis/A1_Robustness_Check/` is fully self-contained (pre-computed results included). Run the notebook(s) inside to reproduce the `R2C1_daily_mean_mae_rmse` and `R2C1_parameter` tables.
+| Sub-folder | Produces | Default step |
+|---|---|---|
+| `benchmark_fixed_window/` | Figure 2, fixed-windows table | `STEP2_Analyse_TLGRF_vs_Fixed_Windows.ipynb` |
+| `benchmark_GRF/` | GRF benchmark plots, `updated_flexible_table` | `Benchmark_TLGRF_vs_Classical_GRF.ipynb` |
+| `benchmark_LLF/` | LLF / Stage-2 benchmark plots | `Benchmark_LLF_TLGRF_Results.ipynb` |
+| `benchmark_delta/` | Delta weighting benchmark | `Benchmark_Delta_TLGRF.ipynb` |
+| `TLGRF_Feature_Importance/` | Feature importance plots, `TOPV20_Itemized` | STEP2, STEP3, STEP4 |
+| `coronaSEIR/` | SEIR-TLRF vs. SEIR-tcv figures, `SEIR_metrics` | `Analyse_SEIR_Results_w_Colorado_Case_Study.ipynb` |
+| `benchmark_tcv_kmeans_code/` | k-means TCV benchmark, `Best_Kmeans_Table` | `STEP4_generate_validation_diff.ipynb` |
+| `benchmark_transfer_learning/` | LASSO-TL benchmark (Appendix E) | `STEP6_Evaluate_Stage2_Predictions.py` |
+| `OLS_Weighted_Telescopic_Form/` | `Inclusion_Exclusion_Table_OLS` | `OLS_Weighted_Telescopic_Form.ipynb` |
+
+### Robustness check (Appendix A1)
+
+`analysis/A1_Robustness_Check/` is self-contained — pre-computed predictions included. The default step is `STEP3_R2C1_Analyse_Results.py`; `--all` additionally runs STEP1 (DGP) and STEP2 (GRF training, requires R).
 
 ---
 

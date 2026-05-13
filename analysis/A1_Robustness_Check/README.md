@@ -1,7 +1,7 @@
 # A1 Robustness Check: Hyperparameter Sensitivity
 
 > [!TIP]
-> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce paper figures (default), or `./run_all.sh --all` for the full pipeline.
 
 ## Overview
 
@@ -29,14 +29,18 @@ This folder is **fully self-contained** and tests the sensitivity of TLRF perfor
 `R2C1_predictions.parquet` is pre-computed, so the paper tables can be reproduced by running only STEP3:
 
 ```bash
+# Easiest — from repo root:
+./run_all.sh
+
+# Or manually:
 cd analysis/A1_Robustness_Check
 python STEP3_R2C1_Analyse_Results.py
 ```
 
-To regenerate from scratch:
+To regenerate from scratch (`./run_all.sh --all` runs STEP1 and STEP2 automatically; note STEP2 requires R + `grf`):
 
 ```bash
 python STEP1_R2C1_DGP.py          # generates DGP data into data/
-python STEP2_R2C1_Train_GRF.py    # trains GRF variants; writes R2C1_predictions.parquet
+python STEP2_R2C1_Train_GRF.py    # trains GRF variants; requires R + grf
 python STEP3_R2C1_Analyse_Results.py
 ```

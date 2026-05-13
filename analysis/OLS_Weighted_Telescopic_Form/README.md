@@ -1,7 +1,7 @@
 # OLS Weighted Telescopic Form
 
 > [!TIP]
-> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce paper figures (default), or `./run_all.sh --all` for the full pipeline.
 
 ## Overview
 
@@ -22,8 +22,12 @@ This folder contains the numerical derivation and verification of the OLS weight
 ## Running
 
 ```bash
+# Easiest — from repo root:
+./run_all.sh
+
+# Or manually:
 cd analysis/OLS_Weighted_Telescopic_Form
 jupyter notebook OLS_Weighted_Telescopic_Form.ipynb
 ```
 
-No external data files are required; all computation is performed within the notebook.
+No external data files are required; all computation is self-contained within the notebook.

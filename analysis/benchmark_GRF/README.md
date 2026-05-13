@@ -1,7 +1,7 @@
 # Benchmark: GRF Variants
 
 > [!TIP]
-> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce paper figures (default), or `./run_all.sh --all` for the full pipeline.
 
 ## Overview
 
@@ -33,6 +33,10 @@ Reads the following pre-computed Parquet files from `../data/`:
 ## Running
 
 ```bash
+# Easiest — from repo root:
+./run_all.sh
+
+# Or manually:
 cd analysis/benchmark_GRF
 jupyter notebook Benchmark_TLGRF_vs_Classical_GRF.ipynb
 ```
