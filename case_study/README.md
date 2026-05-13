@@ -1,5 +1,12 @@
 # Case Study: Colorado CDPHE Outbreak-Alert Comparison
 
+> [!TIP]
+> **Run everything at once** from the repo root:
+> ```bash
+> ./run_all.sh
+> ```
+> All four case-study notebooks are included. No cluster access or additional data required.
+
 ## Overview
 
 This folder contains the code and data for the case study reported in the paper. The goal is to compare TLGRF-derived outbreak alerts against Colorado Department of Public Health and Environment (CDPHE) county-level outbreak investigations, asking whether a simple TLGRF threshold rule can identify counties that later required formal capacity investigations by public health officials.

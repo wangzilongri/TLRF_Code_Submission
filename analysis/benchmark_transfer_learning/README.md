@@ -1,5 +1,8 @@
 # Benchmark: LASSO Transfer Learner (LASSOTL)
 
+> [!TIP]
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+
 ## Overview
 
 This folder implements the LASSO Transfer Learner (LASSOTL) benchmark described in Appendix E of the paper. LASSOTL is a two-stage estimator: Stage 1 fits a LASSO regression per county using leave-one-out cross-validation; Stage 2 applies a transfer-learning correction to adapt Stage 1 predictions across counties. Results are compared against TLRF on the Colorado backtest.

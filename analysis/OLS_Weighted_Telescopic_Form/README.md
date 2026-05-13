@@ -1,5 +1,8 @@
 # OLS Weighted Telescopic Form
 
+> [!TIP]
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+
 ## Overview
 
 This folder contains the numerical derivation and verification of the OLS weighted telescopic form used in the theoretical motivation section of the paper.

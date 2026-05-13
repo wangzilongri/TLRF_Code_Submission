@@ -1,5 +1,8 @@
 # TLGRF Feature Importance
 
+> [!TIP]
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+
 ## Overview
 
 This folder aggregates GRF variable importance scores across the full TLRF backtest period and county set, producing the ranked feature importance figures and the TOPV20 itemized table reported in the paper.

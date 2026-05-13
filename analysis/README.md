@@ -1,5 +1,12 @@
 # Analysis: Benchmarks and Robustness Checks
 
+> [!TIP]
+> **Run everything at once** from the repo root:
+> ```bash
+> ./run_all.sh
+> ```
+> All benchmarks in this folder are included. No cluster access or additional data required.
+
 ## Overview
 
 This folder contains all benchmark comparisons and the Appendix A1 robustness check for the TLRF paper. Each sub-folder is largely independent and maps to one or more specific figures or tables in the paper. The TLRF model outputs required as inputs to these benchmarks are provided as pre-computed Parquet files in `analysis/data/`.
