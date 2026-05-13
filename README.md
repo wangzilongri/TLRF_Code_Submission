@@ -1,5 +1,13 @@
 # TLRF: Transfer Learning Random Forest
 
+> [!TIP]
+> **Reproduce all paper figures and tables in one command:**
+> ```bash
+> git clone <this-repo> && cd TLRF_Code_Submission
+> ./run_all.sh
+> ```
+> `run_all.sh` creates a Python virtual environment, installs every dependency, and runs all notebooks and scripts that produce paper outputs. No cluster access or additional data required.
+
 Code repository for the paper:
 
 > **Small Area Estimation of Case Growths for Timely COVID-19 Outbreak Detection**
@@ -47,10 +55,18 @@ TLRF_Code_Submission/
 
 ## Installation
 
-### Python environment
+### Quick start (recommended)
 
 ```bash
-# Create and activate a virtual environment (recommended)
+./run_all.sh
+```
+
+This single command creates `.venv/`, installs all Python dependencies, and executes every notebook and script that produces a paper output. Logs for each step are written to `.run_logs/`. Requires **Python 3.9+** on `PATH`.
+
+### Manual setup
+
+```bash
+# Create and activate a virtual environment
 python3 -m venv tlrf-env
 source tlrf-env/bin/activate        # macOS / Linux
 # tlrf-env\Scripts\activate         # Windows

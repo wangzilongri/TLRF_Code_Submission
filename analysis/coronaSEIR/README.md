@@ -1,5 +1,8 @@
 # coronaSEIR: TLRF Growth Rate Integration into SEIR Models
 
+> [!TIP]
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+
 ## Overview
 
 This folder contains the code and pre-computed results for Appendix G §"Using TLRF to Improve SEIR Estimates of Colorado Counties" in the paper. It demonstrates that TLRF growth rate estimates can be plugged into a standard SEIR compartmental model to improve county-level case forecasts in Colorado.

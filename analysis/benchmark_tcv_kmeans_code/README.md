@@ -1,5 +1,8 @@
 # Benchmark: k-means Time-Series Cross-Validation (TCV)
 
+> [!TIP]
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+
 ## Overview
 
 This folder implements and evaluates a k-means time-series cross-validation benchmark that compares TLRF's county grouping approach against k-means-based temporal stratification.

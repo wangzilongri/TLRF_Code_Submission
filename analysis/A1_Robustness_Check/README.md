@@ -1,5 +1,8 @@
 # A1 Robustness Check: Hyperparameter Sensitivity
 
+> [!TIP]
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+
 ## Overview
 
 This folder is **fully self-contained** and tests the sensitivity of TLRF performance to key hyperparameters (number of trees, minimum node size, telescoping window length bounds). It corresponds to Appendix A1 of the paper.

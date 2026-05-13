@@ -1,5 +1,8 @@
 # Benchmark: GRF Variants
 
+> [!TIP]
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+
 ## Overview
 
 Compares TLRF against standard GRF (no telescoping window) and GRF with alternative covariate sets. Isolates the contribution of the telescoping window design by holding the Random Forest model class fixed.

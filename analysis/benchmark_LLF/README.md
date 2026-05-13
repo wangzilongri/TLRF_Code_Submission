@@ -1,5 +1,8 @@
 # Benchmark: Local Linear Forest (LLF)
 
+> [!TIP]
+> **Quick start:** run `./run_all.sh` from the repo root to reproduce all paper outputs at once.
+
 ## Overview
 
 Compares TLRF against Local Linear Forest (LLF) and a two-stage GRF + OLS pipeline. Assesses whether forest-based nonparametric weighting is necessary relative to local linear approximations.
