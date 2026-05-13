@@ -214,9 +214,25 @@ Re-running the GRF training is **not required** to replicate the paper's figures
 
 ## Paper Reference
 
-```
-She, Z., Wang, Z., Ayer, T., Chhatwal, J. (2025). Small Area Estimation of Case
-Growths for Timely COVID-19 Outbreak Detection. Operations Research (submitted).
+She, Z., Wang, Z., Chhatwal, J., Ayer, T. (2025). Small Area Estimation of Case Growths for Timely COVID-19 Outbreak Detection. *Operations Research* (submitted).
+
+**Preprint:** <https://arxiv.org/abs/2312.04110>
+
+**Code:** <https://github.com/wangzilongri/TLRF_Code_Submission>
+
+### BibTeX
+
+```bibtex
+@misc{she2023small,
+  title         = {Small Area Estimation of Case Growths for Timely {COVID}-19 Outbreak Detection},
+  author        = {She, Zhaowei and Wang, Zilong and Chhatwal, Jagpreet and Ayer, Turgay},
+  year          = {2023},
+  eprint        = {2312.04110},
+  archivePrefix = {arXiv},
+  primaryClass  = {stat.ML},
+  doi           = {10.48550/arXiv.2312.04110},
+  url           = {https://arxiv.org/abs/2312.04110}
+}
 ```
 
 ---
