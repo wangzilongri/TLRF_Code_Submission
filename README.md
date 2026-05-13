@@ -3,11 +3,17 @@
 > [!TIP]
 > **Reproduce all paper figures and tables in one command:**
 > ```bash
+> # Option A — clone the full repo (includes all pre-computed data, ~1.5 GB):
 > git clone https://github.com/wangzilongri/TLRF_Code_Submission && cd TLRF_Code_Submission
 > ./run_all.sh          # figure-generating steps only  (~15–30 min)
 > ./run_all.sh --all    # full pipeline including upstream preprocessing
+>
+> # Option B — download the source-only archive from the GitHub release (~30 MB),
+> #             then let run_all.sh fetch the data automatically (~1.5 GB):
+> tar -xzf TLRF_Code_Submission_source.tar.gz && cd TLRF_Code_Submission
+> ./run_all.sh          # detects missing data and downloads it before running
 > ```
-> `run_all.sh` creates a Python virtual environment, installs every dependency, and runs all notebooks and scripts that produce paper outputs. No cluster access or additional data required.
+> `run_all.sh` creates a Python virtual environment, installs every dependency, and runs all notebooks and scripts that produce paper outputs. When Parquet data files are absent it fetches them from GitHub automatically. Requires **Python 3.9+** and **git 2.25+**.
 
 Code repository for the paper:
 
@@ -66,14 +72,25 @@ TLRF_Code_Submission/
 
 ### Quick start (recommended)
 
+Two equivalent starting points:
+
+**Option A — clone the full repo** (includes all pre-computed Parquet data, ~1.5 GB download):
 ```bash
-./run_all.sh            # default: figure-generating steps only (~15–30 min)
-./run_all.sh --all      # full pipeline including upstream preprocessing
+git clone https://github.com/wangzilongri/TLRF_Code_Submission
+cd TLRF_Code_Submission
+./run_all.sh
 ```
 
-`run_all.sh` creates `.venv/`, installs all Python dependencies, sets `MPLBACKEND=Agg` for headless rendering, and runs each notebook in its correct working directory. Per-step logs are written to `.run_logs/`. Requires **Python 3.9+** on `PATH`.
+**Option B — source-only archive** (download `TLRF_Code_Submission_source.tar.gz` from the [GitHub release](https://github.com/wangzilongri/TLRF_Code_Submission/releases), ~30 MB). The archive contains all code and notebooks but not the large Parquet data files. `run_all.sh` detects the missing data and downloads it automatically (~1.5 GB) before running:
+```bash
+tar -xzf TLRF_Code_Submission_source.tar.gz
+cd TLRF_Code_Submission
+./run_all.sh           # auto-fetches data on first run, then proceeds normally
+```
 
-**Default mode** runs only the final analysis/visualisation step for each benchmark — the step that reads pre-computed Parquet/CSV inputs and writes paper figures and metric tables. All required intermediate data is already in the repository.
+`run_all.sh` creates `.venv/`, installs all Python dependencies, sets `MPLBACKEND=Agg` for headless rendering, and runs each notebook in its correct working directory. Per-step logs are written to `.run_logs/`. Requires **Python 3.9+** and **git 2.25+** on `PATH`.
+
+**Default mode** runs only the final analysis/visualisation step for each benchmark — the step that reads pre-computed Parquet/CSV inputs and writes paper figures and metric tables.
 
 **`--all` mode** additionally runs upstream preprocessing and model-fitting steps that were originally executed on an HPC cluster. Some of those steps require R + the `grf` package or large intermediate datasets not included in the repo; they may fail in a plain local environment.
 
@@ -119,13 +136,19 @@ Navigate to `case_study/src/` or any `analysis/` sub-folder and open the relevan
 ## Data
 
 ### Pre-computed TLRF outputs (Parquet)
-TLRF model outputs — county-level estimated growth rates, prediction intervals, and backtest metrics — are provided as Parquet files inside `case_study/data/` and `analysis/data/`.
+TLRF model outputs — county-level estimated growth rates, prediction intervals, and backtest metrics — are provided as Parquet files inside `case_study/data/` and `analysis/data/`. The full repository (git clone or full tar) includes these files. The source-only archive omits them; `run_all.sh` fetches them automatically on first run.
+
+### What `run_all.sh` downloads (when data is absent)
+Three directories are fetched via `git sparse-checkout` from the public GitHub repository (~1.5 GB total):
+- `analysis/data/` — all benchmark Parquet files (~1.4 GB)
+- `case_study/data/` — case study Parquet files (~16 MB)
+- `analysis/benchmark_transfer_learning/stage2_benchmark_results/` — LASSO-TL pre-computed results (~78 MB)
 
 ### Case study (`case_study/`)
 The case study is **fully self-contained** — all four notebooks run from the pre-computed Parquet files in `case_study/data/`.
 
 ### Analysis benchmarks (`analysis/`)
-The benchmark notebooks in `analysis/` require the pre-computed benchmark Parquet files in `analysis/data/`. These files are included in the repository.
+The benchmark notebooks in `analysis/` require the pre-computed benchmark Parquet files in `analysis/data/`.
 
 ---
 
@@ -225,7 +248,7 @@ Each sub-folder is independent. All figure-generating steps read from pre-comput
 Most notebooks read from pre-computed Parquet files and can be run on a standard laptop or workstation:
 - **CPU:** Any modern multi-core processor
 - **Memory:** 16 GB RAM recommended (largest Parquet files are ~330 MB; peak in-memory usage is under 8 GB)
-- **Storage:** ~2 GB for the full repository including all Parquet files
+- **Storage:** ~2 GB for the full repository including all Parquet files (or ~30 MB for the source archive + ~1.5 GB downloaded on first run)
 
 ### For TLRF model training (outputs pre-computed)
 Re-running the GRF training is **not required** to replicate the paper's figures and tables — all outputs are provided as Parquet files.
