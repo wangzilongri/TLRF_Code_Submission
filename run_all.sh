@@ -6,23 +6,27 @@
 #   ./run_all.sh            # default: figure-generating steps only (~15–30 min)
 #   ./run_all.sh --all      # full pipeline, including upstream preprocessing
 #
+# If the Parquet data files are absent (e.g. after extracting the source-only
+# archive), this script automatically fetches them from GitHub before running.
+# The download is ~1.5 GB and requires git 2.25+ and an internet connection.
+#
 # Default mode runs only the final analysis/visualisation notebook or script
 # in each benchmark — the step that reads pre-computed Parquet/CSV inputs and
-# writes the paper figures and metric tables.  All required intermediate data
-# is already included in the repository.
+# writes the paper figures and metric tables.
 #
 # --all additionally runs earlier pipeline steps (data preparation, model
 # fitting) that were originally executed on an HPC cluster.  Some of those
 # steps require R + the grf package or large intermediate datasets not
 # included in the repo; they may fail in a plain local environment.
 #
-# Requirements: Python 3.9+ on PATH. Everything else is installed into .venv/.
+# Requirements: Python 3.9+ and git 2.25+ on PATH.
 
 set -uo pipefail
 
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 VENV="$REPO/.venv"
 LOG_DIR="$REPO/.run_logs"
+REPO_URL="https://github.com/wangzilongri/TLRF_Code_Submission.git"
 mkdir -p "$LOG_DIR"
 
 # ── parse flags ───────────────────────────────────────────────────────────────
@@ -43,7 +47,39 @@ fi
 hdr()  { echo -e "\n${BLD}── $* ──${RST}"; }
 skip() { echo -e "  ${DIM}skip  $*${RST}"; }
 
-# ── 1. virtual environment ────────────────────────────────────────────────────
+# ── 1. data fetch (runs only when Parquet files are absent) ───────────────────
+if [[ ! -d "$REPO/analysis/data/benchmark_tlgrf" ]]; then
+    hdr "Fetching data from GitHub"
+    echo "  Parquet files not found locally — downloading from:"
+    echo "  $REPO_URL"
+    echo "  (~1.5 GB; requires git 2.25+ and an internet connection)"
+    echo ""
+
+    tmp=$(mktemp -d)
+    trap 'rm -rf "$tmp"' EXIT
+
+    git clone --quiet --filter=blob:none --no-checkout "$REPO_URL" "$tmp"
+    ( cd "$tmp" && \
+      git sparse-checkout init --cone 2>/dev/null && \
+      git sparse-checkout set \
+          analysis/data \
+          case_study/data \
+          "analysis/benchmark_transfer_learning/stage2_benchmark_results" && \
+      git checkout main --quiet )
+
+    mkdir -p \
+        "$REPO/analysis/data" \
+        "$REPO/case_study/data" \
+        "$REPO/analysis/benchmark_transfer_learning/stage2_benchmark_results"
+    cp -r "$tmp/analysis/data/."  "$REPO/analysis/data/"
+    cp -r "$tmp/case_study/data/" "$REPO/case_study/data/"
+    cp -r "$tmp/analysis/benchmark_transfer_learning/stage2_benchmark_results/." \
+          "$REPO/analysis/benchmark_transfer_learning/stage2_benchmark_results/"
+    rm -rf "$tmp"; trap - EXIT
+    echo -e "  ${GRN}Data ready.${RST}"
+fi
+
+# ── 2. virtual environment ────────────────────────────────────────────────────
 hdr "Environment"
 if [[ ! -f "$VENV/bin/python" ]]; then
     echo "  Creating .venv ..."
@@ -58,7 +94,7 @@ PYTHON="$VENV/bin/python"
 JUPYTER="$VENV/bin/jupyter"
 export MPLBACKEND=Agg          # headless matplotlib; no display needed
 
-# ── 2. helpers ────────────────────────────────────────────────────────────────
+# ── 3. helpers ────────────────────────────────────────────────────────────────
 PASS=0; FAIL=0; FAILS=()
 
 run_nb() {                     # run_nb "label" "rel/dir" "notebook.ipynb"
@@ -87,7 +123,7 @@ run_py() {                     # run_py "label" "rel/dir" "script.py"
     fi
 }
 
-# ── 3. case study ─────────────────────────────────────────────────────────────
+# ── 4. case study ─────────────────────────────────────────────────────────────
 hdr "Case study"
 if [[ $FULL_PIPELINE == true ]]; then
     run_nb "STEP1 investigation overlap"   case_study/src  STEP1_check_investigation_overlap.ipynb
@@ -96,7 +132,7 @@ run_nb "STEP2 outbreak matrix (Figure 3)" case_study/src  STEP2_Generate_Outbrea
 run_nb "STEP3 CDPHE vs TLGRF"             case_study/src  STEP3_CDPHE_vs_TLGRF.ipynb
 run_nb "STEP4 threshold policy"           case_study/src  STEP4_try_threshold_policy.ipynb
 
-# ── 4. benchmarks ─────────────────────────────────────────────────────────────
+# ── 5. benchmarks ─────────────────────────────────────────────────────────────
 hdr "Benchmarks"
 run_nb "GRF variants"                  analysis/benchmark_GRF              Benchmark_TLGRF_vs_Classical_GRF.ipynb
 run_nb "Local Linear Forest"           analysis/benchmark_LLF              Benchmark_LLF_TLGRF_Results.ipynb
@@ -105,25 +141,25 @@ run_nb "Delta weighting"               analysis/benchmark_delta            Bench
 run_nb "k-means TCV"                   analysis/benchmark_tcv_kmeans_code  STEP4_generate_validation_diff.ipynb
 run_py "LASSO-TL benchmark (STEP 6)"   analysis/benchmark_transfer_learning STEP6_Evaluate_Stage2_Predictions.py
 
-# ── 5. SEIR (Appendix G) ──────────────────────────────────────────────────────
+# ── 6. SEIR (Appendix G) ──────────────────────────────────────────────────────
 hdr "SEIR (Appendix G)"
 run_nb "SEIR analysis"                 analysis/coronaSEIR  Analyse_SEIR_Results_w_Colorado_Case_Study.ipynb
 
-# ── 6. feature importance ─────────────────────────────────────────────────────
+# ── 7. feature importance ─────────────────────────────────────────────────────
 hdr "Feature importance"
 run_nb "Feature importance (STEP 2)"   analysis/TLGRF_Feature_Importance  STEP2_Examine_TLGRF_Feature_Importance.ipynb
 run_nb "Tree depths (STEP 3)"          analysis/TLGRF_Feature_Importance  STEP3_Examine_TLGRF_Depths.ipynb
 run_nb "Leaf sizes (STEP 4)"           analysis/TLGRF_Feature_Importance  STEP4_Examine_TLGRF_Leaf_Sizes.ipynb
 
-# ── 7. OLS telescopic form ────────────────────────────────────────────────────
+# ── 8. OLS telescopic form ────────────────────────────────────────────────────
 hdr "OLS telescopic form"
 run_nb "OLS weighted telescopic form"  analysis/OLS_Weighted_Telescopic_Form  OLS_Weighted_Telescopic_Form.ipynb
 
-# ── 8. robustness check (Appendix A1) ────────────────────────────────────────
+# ── 9. robustness check (Appendix A1) ────────────────────────────────────────
 hdr "Appendix A1 robustness check"
 run_py "A1 STEP 3 analyse results"     analysis/A1_Robustness_Check  STEP3_R2C1_Analyse_Results.py
 
-# ── 9. upstream pipeline steps (--all only) ───────────────────────────────────
+# ── 10. upstream pipeline steps (--all only) ───────────────────────────────────
 if [[ $FULL_PIPELINE == true ]]; then
     echo ""
     hdr "Upstream pipeline steps (--all)"
@@ -148,7 +184,7 @@ if [[ $FULL_PIPELINE == true ]]; then
     run_py "A1 STEP2 train GRF (needs R)"  analysis/A1_Robustness_Check  STEP2_R2C1_Train_GRF.py
 fi
 
-# ── 10. summary ───────────────────────────────────────────────────────────────
+# ── 11. summary ───────────────────────────────────────────────────────────────
 echo ""
 hdr "Summary"
 if [[ $FULL_PIPELINE == true ]]; then
