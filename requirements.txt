@@ -36,3 +36,4 @@ ipywidgets>=7.7.0
 notebook>=6.5.0
 # jupyterlab>=3.5.0      # uncomment to use JupyterLab instead
 ipykernel>=6.0.0
+cvxpy>=1.3
